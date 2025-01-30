@@ -49,6 +49,12 @@ ExternalProject_Add(${OEM7_DECODER}
   UPDATE_DISCONNECTED TRUE
   PREFIX ${CMAKE_BINARY_DIR}/${OEM7_DECODER}
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR} -DVERSION=1.0.0.2
+  LOG_DOWNLOAD ON
+  LOG_OUTPUT_ON_FAILURE ON
+  BUILD_BYPRODUCTS 
+  ${CMAKE_BINARY_DIR}/usr/lib/libCommon.a
+  ${CMAKE_BINARY_DIR}/usr/lib/libStreamInterface.a
+  ${CMAKE_BINARY_DIR}/usr/lib/libNovatel.a
 )
 
 
@@ -93,7 +99,7 @@ add_executable(${PROJECT_NAME}_exe
 
 
 
-message("Linking to EDIE at: '${CMAKE_BINARY_DIR}'")
+message(STATUS "Linking to EDIE at: '${CMAKE_BINARY_DIR}'")
 
 target_link_libraries(${PROJECT_NAME}
    Boost::boost
@@ -192,7 +198,7 @@ pluginlib_export_plugin_description_file(${PROJECT_NAME} novatel_oem7_driver_plu
 install(TARGETS ${PROJECT_NAME} 
    ARCHIVE DESTINATION lib 
    LIBRARY DESTINATION lib 
-   RUNTIME DESTINATION bin} 
+   RUNTIME DESTINATION bin 
 )
 
 install(FILES ${PROJECT_NAME}_plugins.xml DESTINATION share)
