@@ -6,6 +6,11 @@ CLEAN=
 BUILD_DOCKER=
 TYPE=build
 
+HOST_USERNAME=$(id -un)
+HOST_UID=$(id -u)
+HOST_GROUPNAME=$(id -gn)
+HOST_GID=$(id -g)
+
 print_usage()
 {
     echo "$0 -h | [-c][-b] ROS_ARCH ROS_DISTRO"
@@ -15,23 +20,26 @@ print_usage()
     echo " -c: full clean rebuild of docker container, --pull --no-cache"
     echo " -t: container used for testing; only ros-base installed; no driver dependencies installed"
     echo ""
-    echo " ROS_ARCH:   i386 | amd64 | arm32v7 | arm64v8" 
-    echo " ROS_DISTRO: kinetic | melodic | noetic"
+    echo " ROS_ARCH:   amd64 | arm64v8" 
+    echo " ROS_DISTRO: foxy"
     echo " e.g.:"
-    echo "  $0 amd64 noetic"
+    echo "  $0 amd64 foxy"
+    echo "  $0 arm64 foxy"
     echo ""
-    echo "Only arch/platform combinations avaliable from 'Docker official ROS images' are supported."  
+    echo "Only arch/platform combinations avaliable from OSRF are supported."  
 }
 
 build_docker()
 {
-    if [ $ROS_ARCH = "i386" ]; then
-	# Special docker
-        docker build $CLEAN -t $NAME - < docker/Dockerfile.i386.$ROS_DISTRO.build
-    else
-	# Generic docker
-        docker build $CLEAN -t $NAME --build-arg=USR=$TYPE --build-arg=ROS_ARCH=$ROS_ARCH --build-arg=ROS_DISTRO=$ROS_DISTRO - < docker/Dockerfile.build
-    fi
+    docker build $CLEAN -t $NAME \
+        --build-arg=USR=$TYPE \
+        --build-arg=ROS_ARCH=$ROS_ARCH \
+        --build-arg=ROS_DISTRO=$ROS_DISTRO \
+        --build-arg=HOST_USERNAME=$HOST_USERNAME \
+        --build-arg=HOST_UID=$HOST_UID \
+        --build-arg=HOST_GROUPNAME=$HOST_GROUPNAME \
+        --build-arg=HOST_GID=$HOST_GID \
+        --file docker/Dockerfile.build .
 }
 
 
@@ -65,6 +73,7 @@ done
 shift $(($OPTIND - 1))
 ROS_ARCH=$1
 ROS_DISTRO=$2
+
 
 
 NAME=$ROS_ARCH-ros-$ROS_DISTRO-novatel-oem7-driver-$TYPE

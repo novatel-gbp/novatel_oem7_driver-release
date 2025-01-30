@@ -1,4 +1,4 @@
-Header                          header
+std_msgs/Header                 header
 Oem7Header                      nov_header
 AccessStatus                    access_status
 SyncState                       sync_state

@@ -22,26 +22,36 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __ROS_MESSAGES_HPP__
-#define __ROS_MESSAGES_HPP__
+#ifndef DRIVER_PARAMETER_HPP
+#define DRIVER_PARAMETER_HPP
 
-#include <ros/ros.h>
-
+#include <rclcpp/rclcpp.hpp>
 
 namespace novatel_oem7_driver
 {
 
-  uint32_t GetNextMsgSequenceNumber();
+template <class T> class DriverParameter
+{
+public:
+  rclcpp::Node&  node_;
+  std::string    name_;
+  T              value_;
 
-  template <typename T>
-  void
-  SetROSHeader(
-      const std::string& frame_id,
-      boost::shared_ptr<T>& msg)
+  DriverParameter(std::string name, T def_value, rclcpp::Node& node):
+    name_(name),
+    node_(node)
   {
-    msg->header.frame_id = frame_id;
-    msg->header.stamp    = ros::Time::now();
-    msg->header.seq      = GetNextMsgSequenceNumber();
+    node_.declare_parameter<T>(name_, def_value);
   }
+
+  const T& value()
+  {
+    node_.get_parameter(name_, value_);
+    return value_;
+  }
+};
+
 }
 #endif
+
+

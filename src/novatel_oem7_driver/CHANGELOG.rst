@@ -1,35 +1,69 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-4.3.0 (2024-01-30)
-------------------
-* ISA 100C data changed in src/novatel_oem7_driver/config/oem7_supported_imus.yaml
 
-* CMake error fix in docker/Dockerfile.build
+20.6.0 (2025-01-30)
+--------------------
+Various QoL changes
 
-* CONNECTIMU command and CORRIMUSB comment added in src/novatel_oem7_driver/config/std_init_commands.yaml
+Modifications:
 
-4.2.0 (2023-03-14)
-------------------
-* Minor fix to include missing header file
+* Reduced log verbosity of various expected logs to DEBUG
+* Updated launch files to include all configurable parameters 
+* Added BESTGNSSVEL and RAWIMUSX Oem7 Messages
+* Expanded oem7_msgs.yaml and std_oem7_raw_msgs.yaml to include all topics matching Oem7Decoder database
+* Minor adjustments to std_init_commands.yaml
 
-* CMakeLists update to suppress external project
 
-4.1.0 (2023-02-27)
-------------------
-* ROS1 now builds NovAtel EDIE from external repository
+20.5.0 (2024-09-26)
+--------------------
+Misc ROS2 fixes
+Added support in the CMakeLists.txt to include building with ninja
 
-4.0.0 (2022-03-04)
-------------------
-* Adding new messages
 
-* Support BESTGNSSPOS log topic publish
+20.4.0 (2024-07-25)
+--------------------
+Implementation of Odometry to publish ellipsoid height for GNSS only and SPAN receivers
 
-3.0.0 (2022-02-23)
-------------------
-* Adding new messages
+Fixes:
 
-* Support PPPPOS, TERRASTARSTATUS, TERRASTARINFO log topic publish
+* Adjusted Odometry to use undulation from BESTPOS or INSPVAX
+* Listed git as a dependency in CmakeLists.txt
+
+20.0.0 (2023-04-18)
+--------------------
+Formal support for Humble; functionality updated to that of ROS1 v4.2.0
+
+Features:
+
+* BESTGNSSPOS, PPPPOS, TERRASTARINFO, TERRASTARSTATUS Oem7 Messages
+     
+* imu/data_raw output, source from RAWIMUSX and scaled
+    
+* HG4930_AN04, HG4930_AN04_400Hz IMUs
+  
+* Odometry Angular velocities
+
+* Optionally, publish Odometry Transform
+
+* Optionally, use first valid GPSFix as Odometry Pose origin
+
+
+Fixes:
+
+* Rotate Odometry Twist covariances into local frame
+
+
+
+10.5.0 (2021-11-12)
+--------------------
+Misc ROS2 fixes
+
+
+10.0.0 (2021-08-31)
+--------------------
+Initial Support for ROS2/Foxy
+
 
 2.2.0 (2021-02-03)
 ------------------
