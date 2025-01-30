@@ -2,7 +2,33 @@
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+20.6.0 (2025-01-30)
+--------------------
+Various QoL changes
 
+Modifications:
+
+* Reduced log verbosity of various expected logs to DEBUG
+* Updated launch files to include all configurable parameters 
+* Added BESTGNSSVEL and RAWIMUSX Oem7 Messages
+* Expanded oem7_msgs.yaml and std_oem7_raw_msgs.yaml to include all topics matching Oem7Decoder database
+* Minor adjustments to std_init_commands.yaml
+
+
+20.5.0 (2024-09-26)
+--------------------
+Misc ROS2 fixes
+Added support in the CMakeLists.txt to include building with ninja
+
+
+20.4.0 (2024-07-25)
+--------------------
+Implementation of Odometry to publish ellipsoid height for GNSS only and SPAN receivers
+
+Fixes:
+
+* Adjusted Odometry to use undulation from BESTPOS or INSPVAX
+* Listed git as a dependency in CmakeLists.txt
 
 20.0.0 (2023-04-18)
 --------------------
