@@ -6,6 +6,11 @@ CLEAN=
 BUILD_DOCKER=
 TYPE=build
 
+HOST_USERNAME=$(id -un)
+HOST_UID=$(id -u)
+HOST_GROUPNAME=$(id -gn)
+HOST_GID=$(id -g)
+
 print_usage()
 {
     echo "$0 -h | [-c][-b] ROS_ARCH ROS_DISTRO"
@@ -26,8 +31,15 @@ print_usage()
 
 build_docker()
 {
-	
-    docker build $CLEAN -t $NAME --build-arg=USR=$TYPE --build-arg=ROS_ARCH=$ROS_ARCH --build-arg=ROS_DISTRO=$ROS_DISTRO - < docker/Dockerfile.build
+    docker build $CLEAN -t $NAME \
+        --build-arg=USR=$TYPE \
+        --build-arg=ROS_ARCH=$ROS_ARCH \
+        --build-arg=ROS_DISTRO=$ROS_DISTRO \
+        --build-arg=HOST_USERNAME=$HOST_USERNAME \
+        --build-arg=HOST_UID=$HOST_UID \
+        --build-arg=HOST_GROUPNAME=$HOST_GROUPNAME \
+        --build-arg=HOST_GID=$HOST_GID \
+        --file docker/Dockerfile.build .
 }
 
 
