@@ -20,6 +20,7 @@ set(MSG_FILES
   msg/BESTUTM.msg
   msg/BESTVEL.msg
   msg/BESTGNSSPOS.msg
+  msg/BESTGNSSVEL.msg
   msg/PPPPOS.msg
   msg/HEADING2.msg
   msg/INSCONFIG.msg
@@ -38,6 +39,7 @@ set(MSG_FILES
   msg/INSResetType.msg
   msg/INSSourceStatus.msg
   msg/INSUpdate.msg
+  msg/RAWIMUSX.msg
   msg/BestExtendedSolutionStatus.msg
   msg/InertialSolutionStatus.msg
   msg/INSAlignmentMode.msg
