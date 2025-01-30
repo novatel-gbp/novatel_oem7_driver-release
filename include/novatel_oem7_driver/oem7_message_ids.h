@@ -35,6 +35,7 @@ namespace novatel_oem7_driver
   const int BESTPOS_OEM7_MSGID            =   42;
   const int BESTUTM_OEM7_MSGID            =  726;
   const int BESTVEL_OEM7_MSGID            =   99;
+  const int BESTGNSSVEL_OEM7_MSGID        = 1430;
   const int BESTGNSSPOS_OEM7_MSGID        = 1429;
   const int PPPPOS_OEM7_MSGID             = 1538;
   const int CORRIMUS_OEM7_MSGID           = 2264;

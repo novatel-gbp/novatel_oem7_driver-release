@@ -49,11 +49,26 @@ def generate_launch_description():
                     get_params("oem7_supported_imus.yaml" ),
                     get_params("std_init_commands.yaml"   ),
                     {
+                    # Refer to README for more information on the configuration parameters
+                    # Receiver IO Parameters
                     'oem7_msg_decoder'   : 'Oem7MessageDecoder',
                     'oem7_max_io_errors' : 3,
                     'oem7_if'            : 'Oem7ReceiverPort',
                     'oem7_port_name'     : LaunchConfiguration('oem7_port_name'),
-                    'oem7_port_baud'     : LaunchConfiguration('oem7_port_baud')
+                    'oem7_port_baud'     : LaunchConfiguration('oem7_port_baud'),
+                    
+                    # Topic Parameters
+                    'oem7_position_source' : '', # If not set, then uses INSPVA or BESTPOS based on quality
+                    'oem7_imu_rate'   : 0,
+                    'oem7_odometry_zero_origin' : False,
+                    'oem7_odometry_transform' : False,
+
+                    # Debug/Other Parameters
+                    'oem7_receiver_log_file' : '',
+                    'oem7_decoder_log_file' : '',
+                    'oem7_strict_receiver_init' : True,
+                    'oem7_publish_unknown_oem7raw' : False,
+                    'oem7_publish_delay' : 0.0
                     },
                     get_override_params() # Must be last to override
                     ],

@@ -180,11 +180,11 @@ namespace novatel_oem7_driver
         {
           raw_msg_pub_.insert(msg);
 
-          RCLCPP_INFO_STREAM(get_logger(), "Oem7 Raw message '" << msg << "' will be published." );
+          RCLCPP_DEBUG_STREAM(get_logger(), "Oem7 Raw message '" << msg << "' will be published." );
         }
         else
         {
-          RCLCPP_WARN_STREAM(get_logger(), "Oem7 Raw message '" << msg << "' duplicate specified." );
+          RCLCPP_DEBUG_STREAM(get_logger(), "Oem7 Raw message '" << msg << "' duplicate specified." );
         }
       }
 

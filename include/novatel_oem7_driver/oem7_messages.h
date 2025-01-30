@@ -137,6 +137,19 @@ namespace novatel_oem7_driver
    };
   static_assert(sizeof(BESTVELMem) == 44, ASSERT_MSG);
 
+  struct __attribute__((packed))
+  BESTGNSSVELMem
+  {
+    oem7_enum_t           sol_stat;
+    oem7_enum_t           vel_type;
+    float              latency;
+    float              diff_age;
+    double             hor_speed;
+    double             track_gnd;
+    double             ver_speed;
+    float              reserved;
+   };
+  static_assert(sizeof(BESTGNSSVELMem) == 44, ASSERT_MSG);
 
    struct __attribute__((packed))
   BESTGNSSPOSMem

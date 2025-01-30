@@ -41,6 +41,8 @@
 #include "novatel_oem7_msgs/msg/insconfig.hpp"
 #include "novatel_oem7_msgs/msg/inspva.hpp"
 #include "novatel_oem7_msgs/msg/inspvax.hpp"
+#include "novatel_oem7_msgs/msg/rawimusx.hpp"
+
 
 #include <oem7_ros_publisher.hpp>
 #include <driver_parameter.hpp>
@@ -73,11 +75,13 @@ namespace novatel_oem7_driver
     std::unique_ptr<Oem7RosPublisher<novatel_oem7_msgs::msg::INSSTDEV>>        insstdev_pub_;
     std::unique_ptr<Oem7RosPublisher<novatel_oem7_msgs::msg::INSPVAX>>         inspvax_pub_;
     std::unique_ptr<Oem7RosPublisher<novatel_oem7_msgs::msg::INSCONFIG>>       insconfig_pub_;
+    std::unique_ptr<Oem7RosPublisher<novatel_oem7_msgs::msg::RAWIMUSX>>        rawimusx_pub_;
 
 
     std::shared_ptr<novatel_oem7_msgs::msg::INSPVA>   inspva_;
     std::shared_ptr<novatel_oem7_msgs::msg::CORRIMU>  corrimu_;
     std::shared_ptr<novatel_oem7_msgs::msg::INSSTDEV> insstdev_;
+    std::shared_ptr<novatel_oem7_msgs::msg::RAWIMUSX> rawimusx_;
 
     oem7_imu_rate_t imu_rate_;                    ///< IMU output rate
     double          imu_raw_gyro_scale_factor_;   ///< IMU-specific raw gyroscope scaling
@@ -162,6 +166,12 @@ namespace novatel_oem7_driver
     {
       MakeROSMessage(msg, corrimu_);
       corrimu_pub_->publish(corrimu_);
+    }
+
+    void publishRawImuSXMsg(Oem7RawMessageIf::ConstPtr msg)
+    {
+      MakeROSMessage(msg, rawimusx_);
+      rawimusx_pub_->publish(rawimusx_);
     }
 
 
@@ -286,6 +296,8 @@ namespace novatel_oem7_driver
       insstdev_pub_  = std::make_unique<Oem7RosPublisher<novatel_oem7_msgs::msg::INSSTDEV>>( "INSSTDEV",  node);
       inspvax_pub_   = std::make_unique<Oem7RosPublisher<novatel_oem7_msgs::msg::INSPVAX>>(  "INSPVAX",   node);
       insconfig_pub_ = std::make_unique<Oem7RosPublisher<novatel_oem7_msgs::msg::INSCONFIG>>("INSCONFIG", node);
+      rawimusx_pub_ = std::make_unique<Oem7RosPublisher<novatel_oem7_msgs::msg::RAWIMUSX>>(  "RAWIMUSX",  node);
+
 
       DriverParameter<int> imu_rate_p("oem7_imu_rate", 0, *node_);
       imu_rate_ = imu_rate_p.value();
@@ -301,6 +313,7 @@ namespace novatel_oem7_driver
                                       {
                                         {RAWIMUSX_OEM7_MSGID,            MSGFLAG_NONE},
                                         {CORRIMUS_OEM7_MSGID,            MSGFLAG_NONE},
+                                        {RAWIMUSX_OEM7_MSGID,            MSGFLAG_NONE},
                                         {IMURATECORRIMUS_OEM7_MSGID,     MSGFLAG_NONE},
                                         {INSPVAS_OEM7_MSGID,             MSGFLAG_NONE},
                                         {INSPVAX_OEM7_MSGID,             MSGFLAG_NONE},
@@ -339,6 +352,7 @@ namespace novatel_oem7_driver
       }
       else if(msg->getMessageId() == RAWIMUSX_OEM7_MSGID)
       {
+        publishRawImuSXMsg(msg);
         processRawImuMsg(msg);
       }
       else
