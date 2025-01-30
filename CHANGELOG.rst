@@ -1,7 +1,12 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package novatel_oem7_driver
+Changelog for package novatel_oem7_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+20.6.0 (2025-01-30)
+--------------------
+Various QoL changes
+
+* BESTGNSSVEL, INSPVASX Oem7 Messages
 
 
 20.0.0 (2023-04-18)
