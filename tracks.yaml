@@ -20,11 +20,11 @@ tracks:
     patches: null
     release_inc: '1'
     release_repo_url: null
-    release_tag: 20.1.0
+    release_tag: 20.6.0
     ros_distro: humble
     vcs_type: git
     vcs_uri: https://github.com/novatel/novatel_oem7_driver.git
-    version: 20.1.0
+    version: 20.6.0
   kinetic:
     actions:
     - bloom-export-upstream :{vcs_local_uri} :{vcs_type} --tag :{release_tag} --display-uri
