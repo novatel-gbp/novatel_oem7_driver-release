@@ -48,11 +48,26 @@ def generate_launch_description():
                     get_params("std_msg_topics.yaml"      ),
                     get_params("oem7_supported_imus.yaml" ),
                     {
+                    # Refer to README for more information on the configuration parameters
+                    # Receiver IO Parameters
                     'oem7_msg_decoder'   : 'Oem7MessageDecoder',
                     'oem7_max_io_errors' : 1,
                     'oem7_if'            : 'Oem7ReceiverFile',
                     'oem7_file_name'     : LaunchConfiguration('oem7_file_name'),
-                    'oem7_publish_delay' : 0.01
+                    
+                    # Topic Parameters
+                    'oem7_position_source' : '', # If not set, then uses INSPVA or BESTPOS based on quality
+                    'oem7_imu_rate'   : 0,
+                    'oem7_odometry_zero_origin' : False,
+                    'oem7_odometry_transform' : False,
+
+                    # Debug/Other Parameters
+                    'oem7_receiver_log_file' : '',
+                    'oem7_decoder_log_file' : '',
+                    'oem7_strict_receiver_init' : True,
+                    'oem7_publish_unknown_oem7raw' : False,
+                    'oem7_publish_delay' : 0.01 # Used with file based input
+                
                     },
                     get_override_params() # Must be last to override
                     ],
