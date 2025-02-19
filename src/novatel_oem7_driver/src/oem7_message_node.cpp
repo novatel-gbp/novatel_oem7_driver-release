@@ -29,7 +29,6 @@
 #include <map>
 #include <algorithm>
 
-#include <boost/asio.hpp>
 
 #include "novatel_oem7_msgs/srv/oem7_abascii_cmd.hpp"
 #include "novatel_oem7_msgs/msg/oem7_raw_msg.h"
@@ -230,19 +229,28 @@ namespace novatel_oem7_driver
     {
       RCLCPP_DEBUG_STREAM(get_logger(), "AACmd: cmd '" << cmd << "'");
 
+      const unsigned char* cmd_char = reinterpret_cast<const unsigned char*>(cmd.c_str());
+      unsigned int cmd_len = static_cast<unsigned int>(cmd.length());
+
       // Retry sending the commands. For configuration commands, there is no harm in duplicates.
       for(int attempt = 0;
               attempt < 10;
               attempt++)
       {
+        if (!rclcpp::ok()) {return;};
+
         {
           std::lock_guard<std::mutex> lk(rsp_ready_mtx_);
     	    rsp_.clear();
     	  }
+        
+        recvr_->write(cmd_char, cmd_len);
 
-        recvr_->write(boost::asio::buffer(cmd));
         static const std::string NEWLINE("\n");
-        recvr_->write(boost::asio::buffer(NEWLINE));
+        static const unsigned char* NEWLINE_CHAR = reinterpret_cast<const unsigned char*>(NEWLINE.c_str());
+        static unsigned int NEWLINE_LEN = static_cast<unsigned int>(NEWLINE.length());
+
+        recvr_->write(NEWLINE_CHAR, NEWLINE_LEN);
 
         std::unique_lock<std::mutex> lk(rsp_ready_mtx_);
         if(rsp_ready_cond_.wait_until(lk,
@@ -273,8 +281,8 @@ namespace novatel_oem7_driver
      */
     void outputLogStatistics()
     {
-      RCLCPP_INFO_STREAM(get_logger(), "Log Statistics:");
-      RCLCPP_INFO_STREAM(get_logger(), "Logs: " << total_log_count_ << "; unknown: "   << unknown_msg_num_
+      RCLCPP_DEBUG_STREAM(get_logger(), "Log Statistics:");
+      RCLCPP_DEBUG_STREAM(get_logger(), "Logs: " << total_log_count_ << "; unknown: "   << unknown_msg_num_
                                                        << "; discarded: " << discarded_msg_num_);
 
       for(log_count_map_t::iterator itr = log_counts_.begin();
@@ -284,7 +292,7 @@ namespace novatel_oem7_driver
         int  id    = itr->first;
         long count = itr->second;
 
-        RCLCPP_INFO_STREAM(get_logger(), "Log[" << id << "]:" <<  count);
+        RCLCPP_DEBUG_STREAM(get_logger(), "Log[" << id << "]:" <<  count);
       }
     }
 
@@ -440,6 +448,11 @@ namespace novatel_oem7_driver
         issueConfigCmd(cmd);
       }
 
+      if (!rclcpp::ok()) {
+        RCLCPP_WARN_STREAM(get_logger(), "Shutdown Called Before Initialization Finished" );
+        return;
+      };
+
       RCLCPP_INFO_STREAM(get_logger(), "Extended Receiver Initialization:" );
       for(const auto& cmd : ext_init_cmds_p.value())
       {
@@ -461,8 +474,8 @@ namespace novatel_oem7_driver
       // Allow command entry via service for diagnostics, regardless of init status.
 
       // Now that all internal init commands have been issued, allow external commands:
-      static rmw_qos_profile_t qos = rmw_qos_profile_default;
-      qos.depth = 20;
+           static auto qos = 	 rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
+      qos.keep_last(20);
       oem7_abascii_cmd_srv_ = create_service<novatel_oem7_msgs::srv::Oem7AbasciiCmd>(
                                "Oem7Cmd",
                                std::bind(

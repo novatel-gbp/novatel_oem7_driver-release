@@ -2,6 +2,18 @@
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+24.0.0 (2025-01-31)
+--------------------
+Formal support for Jazzy
+
+Modifications:
+
+* Upgraded oem7_receiver_if.hpp to remove Boost dependency
+* Upgraded port and net receiver connections to ensure that they are non-blocking
+* Removed Boost dependency from the port and net receiver connections. This removes the ability to build with Windows. These files have been left but labelled as sync (to indicate they are blocking), these files are deprecated and will be removed in a future release 
+* Updates to address various deprecation warnings by third party libraries
+
+
 20.6.0 (2025-01-30)
 --------------------
 Various QoL changes
