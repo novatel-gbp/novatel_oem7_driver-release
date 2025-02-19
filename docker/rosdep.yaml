@@ -1,3 +1,0 @@
-novatel_oem7_msgs: 
-    ubuntu: 
-        noble:  [ros-jazzy-novatel-oem7-msgs]
