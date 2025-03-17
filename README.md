@@ -21,7 +21,7 @@ http://wiki.ros.org/novatel_oem7_driver
 
 ## Building novatel_oem7_driver from source code
 ### Prerequisites
-* Install ROS2 Jazzy.
+* Install ROS2 Humble.
 * Obtain OEM7 receiver.  
 
 
@@ -44,8 +44,8 @@ These instructions assume that you are using Ubuntu 22.04.
 1. Install Docker, add the user you intend on using to the 'docker' group. For example:
    1. Add the current user to the 'docker' group: `sudo usermod -aG docker ${USER}`
    1. Apply the membership changes to the current session: `su - ${USER}`
-1. From the base directory of the repository, create container for the desired ROS architecture and distro, e.g. Jazzy:  
-   `./docker/run.sh -r amd64 jazzy`  
+1. From the base directory of the repository, create container for the desired ROS architecture and distro, e.g. Humble:  
+   `./docker/run.sh -r amd64 humble`  
    Note: only amd64 and arm64v8 architectures are supported at this point.  
 1. From within your docker container, use standard ROS2 tools, like colcon.
 1. Alternatively, use the build.sh script.

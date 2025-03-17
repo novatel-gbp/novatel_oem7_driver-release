@@ -25,6 +25,7 @@
 #include <novatel_oem7_driver/oem7_receiver_if.hpp>
 
 
+#include <boost/asio.hpp>
 #include <fstream>
 
 
@@ -39,7 +40,7 @@ namespace novatel_oem7_driver
 
     std::ifstream oem7_file_; ///< Input
 
-    unsigned int num_byte_read_; ///< Total number of bytes read from file.
+    size_t num_byte_read_; ///< Total number of bytes read from file.
 
 
   public:
@@ -80,7 +81,7 @@ namespace novatel_oem7_driver
      * Reads input from file.
      *
      */
-    virtual bool read(unsigned char* data, unsigned int data_len, unsigned int& rlen)
+    virtual bool read( boost::asio::mutable_buffer buf, size_t& rlen)
     {
       if(!oem7_file_)
       {
@@ -96,7 +97,7 @@ namespace novatel_oem7_driver
         sleep(3); // Use absolute sleep, as this is not related to ROS internal timing.
       }
 
-      oem7_file_.read(reinterpret_cast<char*>(data), data_len);
+      oem7_file_.read(boost::asio::buffer_cast<char*>(buf), boost::asio::buffer_size(buf));
       int errno_value = errno; // Cache errno locally, in case any ROS calls /macros affect it.
 
       rlen = oem7_file_.gcount();
@@ -124,8 +125,7 @@ namespace novatel_oem7_driver
      *
      * @return false always.
      */
-
-    virtual bool write(const unsigned char* data, const unsigned int data_len)
+    virtual bool write(boost::asio::const_buffer buf)
     {
       return false;
     }

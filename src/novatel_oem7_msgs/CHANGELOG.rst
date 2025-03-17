@@ -2,11 +2,6 @@
 Changelog for package novatel_oem7_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-24.0.0 (2025-01-31)
---------------------
-Formal support for Jazzy
-
-
 20.6.0 (2025-01-30)
 --------------------
 Various QoL changes

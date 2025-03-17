@@ -21,10 +21,10 @@ print_usage()
     echo " -t: container used for testing; only ros-base installed; no driver dependencies installed"
     echo ""
     echo " ROS_ARCH:   amd64 | arm64v8" 
-    echo " ROS_DISTRO: jazzy"
+    echo " ROS_DISTRO: foxy"
     echo " e.g.:"
-    echo "  $0 amd64 jazzy"
-    echo "  $0 arm64 jazzy"
+    echo "  $0 amd64 foxy"
+    echo "  $0 arm64 foxy"
     echo ""
     echo "Only arch/platform combinations avaliable from OSRF are supported."  
 }
@@ -75,6 +75,7 @@ ROS_ARCH=$1
 ROS_DISTRO=$2
 
 
+
 NAME=$ROS_ARCH-ros-$ROS_DISTRO-novatel-oem7-driver-$TYPE
 $BUILD_DOCKER
 
@@ -89,3 +90,4 @@ else
 fi
 
 docker run -ti --mount type=bind,source=$HOST_DIR,target=$CONT_DIR -w $CONT_DIR -u `id -u`:`id -g` --group-add sudo --rm $NAME:latest 
+
