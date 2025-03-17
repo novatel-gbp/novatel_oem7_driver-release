@@ -3,8 +3,6 @@
 
 #include <oem7_raw_message_if.hpp>
 
-#include <boost/asio/buffer.hpp>
-
 
 
 namespace novatel_oem7
@@ -43,8 +41,9 @@ namespace novatel_oem7
      * Called by Oem7 message decoder implementation to obtain a sequence of bytes, to be parsed into Oem7 message.
      */
     virtual bool read(
-        boost::asio::mutable_buffer, ///< Buffer to be populated
-        size_t& ///< [out]: number of valid bytes in buffer
+        unsigned char* data, ///< Buffer to be populated
+        unsigned int   data_len,  ///< Length of buffer
+        unsigned int&  rlen ///< [out]: number of valid bytes in buffer
         ) = 0;
   };
 

@@ -50,6 +50,12 @@ ExternalProject_Add(${OEM7_DECODER}
   PREFIX ${CMAKE_BINARY_DIR}/${OEM7_DECODER}
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR} -DVERSION=1.0.0.2
   LOG_DOWNLOAD ON
+  LOG_UPDATE ON
+  LOG_PATCH ON
+  LOG_CONFIGURE ON
+  LOG_BUILD ON
+  LOG_INSTALL ON
+  LOG_TEST ON
   LOG_OUTPUT_ON_FAILURE ON
   BUILD_BYPRODUCTS 
   ${CMAKE_BINARY_DIR}/usr/lib/libCommon.a
@@ -72,7 +78,9 @@ include_directories(include
 ## All components are plugins
 add_library(${PROJECT_NAME} SHARED
    src/oem7_receiver_net.cpp
+   src/oem7_receiver_net_sync.cpp
    src/oem7_receiver_port.cpp
+   src/oem7_receiver_port_sync.cpp
    src/oem7_receiver_file.cpp
    src/oem7_message_decoder.cpp
    src/oem7_message_decoder_lib.cpp
