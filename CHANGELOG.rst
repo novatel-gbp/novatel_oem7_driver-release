@@ -2,6 +2,15 @@
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+20.7.0 (2025-03-17)
+--------------------
+Odometry Bug Fixes
+
+Modifications:
+* Odometry is no longer published when the receiver position type = None
+* Suppressed regularly occurring output logs from INFO to DEBUG verbosity
+ 
+
 20.6.0 (2025-01-30)
 --------------------
 Various QoL changes
