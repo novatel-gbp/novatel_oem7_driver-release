@@ -2,6 +2,15 @@
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+24.1.0 (2025-03-17)
+--------------------
+Odometry Bug Fixes
+
+Modifications:
+* Odometry is no longer published when the receiver position type = None
+* Similar Changes as Release 20.7.0 for Humble
+
+
 24.0.0 (2025-01-31)
 --------------------
 Formal support for Jazzy
