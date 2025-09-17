@@ -9,7 +9,7 @@ OEM7 Specific Topics
 --------------------
 Most OEM7 specific topics (such as ``/novatel/oem7/bestpos``) are generally driven by a single log as defined in ``config/std_init_commands.yaml``.
 
-Most published logs are either asynchronous (published when available, indicated by a ONNEW or ONCHANGED trigger) or synchronous (published at a periodic rate, indicated by a ONTIME trigger). 
+Most published logs are either asynchronous (published when available, indicated by a ONNEW or ONCHANGED trigger) or synchronous (published at a periodic rate, indicated by a ONTIME trigger).
 For more information about the LOG command, see here: https://docs.novatel.com/OEM7/Content/Commands/LOG.htm
 The rate of the asynchronous logs can generally not be changed.
 The rate of synchronous logs can often be changed. For example ``config/std_init_commands.yaml`` calls:

@@ -173,13 +173,13 @@ namespace novatel_oem7_driver
 
     void publishOdometry()
     {
-      // Odometry requires a gpsfix topic to be present with valid position data in it
       if(!gpsfix_)
       {
         // No data to derive basic Odometry values
         RCLCPP_DEBUG_STREAM(node_->get_logger(), "No GPSFix to publish odometry");
         return;
       }
+
       if (gpsfix_->status.status == GPSStatus::STATUS_NO_FIX){
         // No valid position data to derive basic Odometry values
         RCLCPP_DEBUG_STREAM(node_->get_logger(), "No valid GPSFix position status to publish odometry");

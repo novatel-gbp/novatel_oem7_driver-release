@@ -52,4 +52,4 @@ If you cannot use the binary driver, you may consider building the driver from t
 The instructions to build from the source code are bundled with the code provided on GitHub `here <https://github.com/novatel/novatel_oem7_driver>`__.
 
 .. note::
-   The official branches on GitHub intended for use are named after the distribution they support, e.g. Use branch Humble to build the driver for ROS2 Humble
+   The official branches on GitHub intended for use are named after the distribution they support, e.g. Use branch Jazy to build the driver for ROS2 Jazzy

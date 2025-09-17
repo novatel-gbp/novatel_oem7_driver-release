@@ -53,7 +53,7 @@ def generate_launch_description():
                     # Receiver IO Parameters
                     'oem7_msg_decoder'   : 'Oem7MessageDecoder',
                     'oem7_max_io_errors' : 3,
-                    'oem7_if'            : 'Oem7ReceiverPort',
+                    'oem7_if'            : LaunchConfiguration('oem7_if'),
                     'oem7_port_name'     : LaunchConfiguration('oem7_port_name'),
                     'oem7_port_baud'     : LaunchConfiguration('oem7_port_baud'),
                     
@@ -77,8 +77,9 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-                             arg('oem7_port_name', None,  'Serial Port Name, e.g. /dev/ttyUSB1'), 
-                             arg('oem7_port_baud', '9600',  'Serial Port Baud, e.g. 115200'), 
+                             arg('oem7_port_name',  None,               'Serial Port Name, e.g. /dev/ttyUSB1'), 
+                             arg('oem7_port_baud',  '9600',             'Serial Port Baud, e.g. 115200'), 
+                             arg('oem7_if',         'Oem7ReceiverPort', 'Interface Type: Oem7ReceiverPort,Oem7ReceiverPortSync (will be deprecated)'),
                              node
                              ])
 

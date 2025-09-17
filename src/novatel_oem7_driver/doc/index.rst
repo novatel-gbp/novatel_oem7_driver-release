@@ -15,7 +15,7 @@ It allows NovAtel OEM7 devices to communicate via the ROS framework in a simple,
 
 This document focuses on use of the pre-built binary version of the NovAtel OEM7 ROS driver.
 For modifying and installing the ROS driver from source code, refer to the NovAtel GitHub ROS driver repository at
-`GitHub <https://github.com/novatel/novatel_oem7_driver>`__.
+`GitHub <https://github.com/novatel/novatel_oem7_driver/tree/jazzy>`__.
 
 For full documentation on NovAtel OEM7 products and their interface, refer to:
 

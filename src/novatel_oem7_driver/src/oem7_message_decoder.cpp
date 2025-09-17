@@ -84,12 +84,12 @@ namespace novatel_oem7_driver
       return true;
     }
 
-    virtual bool read( boost::asio::mutable_buffer buf, size_t& s)
+    virtual bool read(unsigned char* data, unsigned int data_len, unsigned int& rlen)
     {
-      bool ok = recvr_->read(buf, s);
+      bool ok = recvr_->read(data, data_len, rlen);
       if(ok)
       {
-        receiver_dbg_file_->write(boost::asio::buffer_cast<unsigned char*>(buf), s);
+        receiver_dbg_file_->write(data, rlen);
       }
 
       return ok;
