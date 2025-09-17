@@ -1,3 +1,28 @@
+## novatel_oem7_driver (humble) - 20.8.0-1
+
+The packages in the `novatel_oem7_driver` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble --track humble novatel_oem7_driver --edit` on `Wed, 17 Sep 2025 13:27:17 -0000`
+
+These packages were released:
+- `novatel_oem7_driver`
+- `novatel_oem7_msgs`
+
+Version of package(s) in repository `novatel_oem7_driver`:
+
+- upstream repository: https://github.com/novatel/novatel_oem7_driver.git
+- release repository: https://github.com/novatel-gbp/novatel_oem7_driver-release.git
+- rosdistro version: `20.7.0-1`
+- old version: `20.7.0-1`
+- new version: `20.8.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.13.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## novatel_oem7_driver (jazzy) - 24.1.0-1
 
 The packages in the `novatel_oem7_driver` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy novatel_oem7_driver --edit` on `Mon, 17 Mar 2025 15:57:35 -0000`
