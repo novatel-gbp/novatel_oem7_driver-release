@@ -8,7 +8,6 @@
 
 #include <iostream>
 
-#include <typeinfo>
 
 
 namespace
@@ -113,11 +112,9 @@ class InputStream: public InputStreamInterface
     StreamReadStatus
     ReadData(ReadDataStructure& read_data)
     {
-      unsigned int rlen = 0;
-      unsigned char* ucData = reinterpret_cast<unsigned char*>(read_data.cData);
-
-      bool ok = user_->read(ucData, read_data.uiDataSize, rlen);
-
+      size_t rlen = 0;
+      bool ok = user_->read(boost::asio::buffer(read_data.cData, read_data.uiDataSize), rlen);
+  
       StreamReadStatus st;
       st.bEOS = !ok;
       st.uiCurrentStreamRead = rlen;

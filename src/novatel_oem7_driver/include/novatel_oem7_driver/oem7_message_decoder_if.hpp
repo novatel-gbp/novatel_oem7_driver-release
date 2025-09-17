@@ -27,6 +27,8 @@
 
 
 #include <cstddef>
+#include <boost/asio/buffer.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <oem7_raw_message_if.hpp>
 #include <novatel_oem7_driver/oem7_receiver_if.hpp>
