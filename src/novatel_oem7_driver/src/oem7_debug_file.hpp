@@ -23,11 +23,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
+#include <ros/ros.h>
 
 #include <string.h>
 #include <fstream>
-
-#include <rclcpp/rclcpp.hpp>
 
 
 namespace novatel_oem7_driver
@@ -41,12 +40,14 @@ namespace novatel_oem7_driver
 
     std::string file_name_; ///< Filesystem name
 
-    const rclcpp::Logger& logger_; ///< ROS logger
 
   public:
-    Oem7DebugFile(const std::string& file_name, const rclcpp::Logger& logger);
+    Oem7DebugFile();
+
+    virtual bool initialize(std::string& debug_file_name);
 
     virtual bool write(const unsigned char* buf, size_t len);
+    
   };
 }
 

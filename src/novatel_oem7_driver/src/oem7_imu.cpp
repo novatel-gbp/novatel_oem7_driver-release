@@ -60,16 +60,11 @@ inline double feetToMeters(double feet)
 bool
 getImuRawScaleFactors(
     oem7_imu_type_t imu_type,
-    oem7_imu_rate_t imu_rate,
+    imu_rate_t      imu_rate,
     double& gyro_scale,
     double& acc_scale)
 {
   // Refer to RAWIMUSX in OEM7 documentation.
-
-  if(imu_rate == 0)
-  {
-    return false;
-  }
 
   switch(imu_type)
   {

@@ -1,4 +1,4 @@
-std_msgs/Header  header
+Header           header
 Oem7Header       nov_header
 uint32           clock_status
 float64          offset

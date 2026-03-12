@@ -1,21 +1,45 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2020 NovAtel Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 #include <oem7_message_decoder_lib.hpp>
 
 
-
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <decoders/novatel/framer.hpp>
 
 #include <memory>
 
 #include <iostream>
 
-#include <typeinfo>
 
 
 namespace
 {
   // Versioning: reflects underlying EDIE version
   static const novatel_oem7::version_element_t VERSION_MAJOR  = 10;
-  static const novatel_oem7::version_element_t VERSION_MINOR  = 1;
+  static const novatel_oem7::version_element_t VERSION_MINOR  = 2;
   static const novatel_oem7::version_element_t VERSION_SPECIAL= 0;
 }
 
@@ -28,7 +52,7 @@ namespace novatel_oem7
    */
   class Oem7RawMessage: public Oem7RawMessageIf
   {
-    std::unique_ptr<BaseMessageData> bmd_; ///< binary message obtained from receiver
+    boost::shared_ptr<BaseMessageData> bmd_; ///< binary message obtained from receiver
 
 
   public:
@@ -113,11 +137,9 @@ class InputStream: public InputStreamInterface
     StreamReadStatus
     ReadData(ReadDataStructure& read_data)
     {
-      unsigned int rlen = 0;
-      unsigned char* ucData = reinterpret_cast<unsigned char*>(read_data.cData);
-
-      bool ok = user_->read(ucData, read_data.uiDataSize, rlen);
-
+      size_t rlen = 0;
+      bool ok = user_->read(boost::asio::buffer(read_data.cData, read_data.uiDataSize), rlen);
+  
       StreamReadStatus st;
       st.bEOS = !ok;
       st.uiCurrentStreamRead = rlen;
@@ -146,15 +168,15 @@ class Oem7MessageDecoderLib: public Oem7MessageDecoderLibIf
 {
   Oem7MessageDecoderLibUserIf* user_;
   
-  std::unique_ptr<InputStream>     input_stream_; ///< EDIE input stream; refer to EDIE documentation
-  std::unique_ptr<Framer> framer_;   ///< EDIE standard framer
+  boost::shared_ptr<InputStream>     input_stream_; ///< EDIE input stream; refer to EDIE documentation
+  boost::shared_ptr<Framer> framer_;   ///< EDIE standard framer
   
 public:
   Oem7MessageDecoderLib(Oem7MessageDecoderLibUserIf* user):
     user_(user)
   {
-    input_stream_ = std::make_unique<InputStream>(user);
-    framer_       = std::make_unique<Framer>(input_stream_.get());
+    input_stream_ = boost::make_shared<InputStream>(user);
+    framer_       = boost::make_shared<Framer>(input_stream_.get());
 
     framer_->EnableUnknownData(TRUE);
     framer_->SetBMDOutput(FLATTEN);
@@ -163,13 +185,13 @@ public:
   /**
    * Read a complete Oem7 message from EDIE
    */
-  virtual bool readMessage(std::shared_ptr<Oem7RawMessageIf>& msg)
+  virtual bool readMessage(boost::shared_ptr<Oem7RawMessageIf>& msg)
   {
     BaseMessageData* raw_bmd = NULL;
     StreamReadStatus status = framer_->ReadMessage(&raw_bmd);
     if(raw_bmd)
     {
-      msg = std::make_shared<Oem7RawMessage>(raw_bmd);
+      msg = boost::make_shared<Oem7RawMessage>(raw_bmd);
     }
   
     // EOS: No more data is available from EDIE, e.g. EOF reached when reading from file, socket connection broken, etc.
@@ -182,10 +204,10 @@ public:
 /**
  * Factory function
  */
-std::shared_ptr<Oem7MessageDecoderLibIf>
+boost::shared_ptr<Oem7MessageDecoderLibIf>
 GetOem7MessageDecoder(Oem7MessageDecoderLibUserIf* user)
 {
-  std::shared_ptr<Oem7MessageDecoderLib> dec(new Oem7MessageDecoderLib(user));
+  boost::shared_ptr<Oem7MessageDecoderLib> dec(new Oem7MessageDecoderLib(user));
   return dec;
 }
 

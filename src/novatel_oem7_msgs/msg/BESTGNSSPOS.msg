@@ -1,4 +1,4 @@
-std_msgs/Header                 header
+Header                          header
 Oem7Header                      nov_header
 SolutionStatus                  sol_status
 PositionOrVelocityType          pos_type
@@ -21,3 +21,9 @@ uint8                           reserved
 BestExtendedSolutionStatus      ext_sol_stat
 uint8                           galileo_beidou_sig_mask
 uint8                           gps_glonass_sig_mask
+
+
+
+
+
+

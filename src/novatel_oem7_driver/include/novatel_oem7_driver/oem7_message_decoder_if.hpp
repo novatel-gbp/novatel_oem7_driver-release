@@ -26,14 +26,15 @@
 #define __OEM7_MESSAGE_PARSER_IF_HPP__
 
 
+#include <ros/ros.h>
 #include <cstddef>
+#include <boost/asio/buffer.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <oem7_raw_message_if.hpp>
 #include <novatel_oem7_driver/oem7_receiver_if.hpp>
 
-#include "novatel_oem7_msgs/msg/oem7_raw_msg.hpp"
-
-#include <rclcpp/rclcpp.hpp>
+#include "novatel_oem7_msgs/Oem7RawMsg.h"
 
 namespace novatel_oem7_driver
 {
@@ -48,7 +49,7 @@ namespace novatel_oem7_driver
     /**
      * Called when new message is available.
      */
-    virtual void onNewMessage(std::shared_ptr<const novatel_oem7::Oem7RawMessageIf>) = 0;
+    virtual void onNewMessage(boost::shared_ptr<const novatel_oem7::Oem7RawMessageIf>) = 0;
   };
 
 
@@ -67,7 +68,7 @@ namespace novatel_oem7_driver
      * @return true on success
      */
     virtual bool initialize(
-        rclcpp::Node&            nh,    /**< [in] handle of the owner node. Parser uses it to access ROS environment. */
+        ros::NodeHandle&            nh,    /**< [in] handle of the owner node. Parser uses it to access ROS environment. */
         Oem7ReceiverIf*             recvr, /**< [in] Receiver interface used for data input */
         Oem7MessageDecoderUserIf* user   /**< [in] Interface to receiver message callbacks */
         ) = 0;

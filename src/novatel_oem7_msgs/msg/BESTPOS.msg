@@ -1,4 +1,4 @@
-std_msgs/Header                 header
+Header                          header
 Oem7Header                      nov_header
 SolutionStatus                  sol_status
 PositionOrVelocityType          pos_type
@@ -10,7 +10,7 @@ uint32                          datum_id
 float32                         lat_stdev
 float32                         lon_stdev
 float32                         hgt_stdev
-int8[4]                         stn_id
+string                          stn_id
 float32                         diff_age
 float32                         sol_age
 uint8                           num_svs

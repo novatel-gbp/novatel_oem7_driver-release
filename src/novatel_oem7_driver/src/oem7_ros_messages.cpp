@@ -33,23 +33,21 @@
 #include "novatel_oem7_driver/oem7_message_util.hpp"
 
 
-#include "novatel_oem7_msgs/msg/heading2.hpp"
-#include "novatel_oem7_msgs/msg/bestpos.hpp"
-#include "novatel_oem7_msgs/msg/bestvel.hpp"
-#include "novatel_oem7_msgs/msg/bestgnssvel.hpp"
-#include "novatel_oem7_msgs/msg/bestutm.hpp"
-#include "novatel_oem7_msgs/msg/bestgnsspos.hpp"
-#include "novatel_oem7_msgs/msg/ppppos.hpp"
-#include "novatel_oem7_msgs/msg/inspva.hpp"
-#include "novatel_oem7_msgs/msg/inspvax.hpp"
-#include "novatel_oem7_msgs/msg/insconfig.hpp"
-#include "novatel_oem7_msgs/msg/insstdev.hpp"
-#include "novatel_oem7_msgs/msg/corrimu.hpp"
-#include "novatel_oem7_msgs/msg/rawimusx.hpp"
-#include "novatel_oem7_msgs/msg/rxstatus.hpp"
-#include "novatel_oem7_msgs/msg/terrastarinfo.hpp"
-#include "novatel_oem7_msgs/msg/terrastarstatus.hpp"
-#include "novatel_oem7_msgs/msg/time.hpp"
+#include "novatel_oem7_msgs/HEADING2.h"
+#include "novatel_oem7_msgs/BESTGNSSPOS.h"
+#include "novatel_oem7_msgs/BESTPOS.h"
+#include "novatel_oem7_msgs/BESTVEL.h"
+#include "novatel_oem7_msgs/BESTUTM.h"
+#include "novatel_oem7_msgs/PPPPOS.h"
+#include "novatel_oem7_msgs/TERRASTARINFO.h"
+#include "novatel_oem7_msgs/TERRASTARSTATUS.h"
+#include "novatel_oem7_msgs/INSPVA.h"
+#include "novatel_oem7_msgs/INSPVAX.h"
+#include "novatel_oem7_msgs/INSCONFIG.h"
+#include "novatel_oem7_msgs/INSSTDEV.h"
+#include "novatel_oem7_msgs/CORRIMU.h"
+#include "novatel_oem7_msgs/RXSTATUS.h"
+#include "novatel_oem7_msgs/TIME.h"
 
 
 
@@ -58,6 +56,17 @@
 namespace novatel_oem7_driver
 {
 
+/**
+ * Generate ROS message sequence number
+ * @return sequence number
+ */
+uint32_t GetNextMsgSequenceNumber()
+{
+  static uint32_t sequence_number = 0;
+
+  return ++sequence_number;
+}
+
 /*
  * Populates Oem7header from raw message
  */
@@ -65,7 +74,7 @@ void
 SetOem7Header(
     const Oem7RawMessageIf::ConstPtr& msg, ///< in: raw message
     const std::string& name, ///< message name
-    novatel_oem7_msgs::msg::Oem7Header::Type& oem7_hdr ///< header to populate
+    novatel_oem7_msgs::Oem7Header::Type& oem7_hdr ///< header to populate
     )
 {
   getOem7Header(msg, oem7_hdr);
@@ -79,7 +88,7 @@ void
 SetOem7ShortHeader(
     const Oem7RawMessageIf::ConstPtr& msg, ///< in: short raw message
     const std::string& name, ///< message name
-    novatel_oem7_msgs::msg::Oem7Header::Type& oem7_hdr ///< header to populate
+    novatel_oem7_msgs::Oem7Header::Type& oem7_hdr ///< header to populate
     )
 {
   getOem7ShortHeader(msg, oem7_hdr);
@@ -90,14 +99,14 @@ SetOem7ShortHeader(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::HEADING2>(
+MakeROSMessage<novatel_oem7_msgs::HEADING2>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::HEADING2>& heading2)
+    boost::shared_ptr<novatel_oem7_msgs::HEADING2>& heading2)
 {
   assert(msg->getMessageId() == HEADING2_OEM7_MSGID);
 
   const HEADING2Mem* mem = reinterpret_cast<const HEADING2Mem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  heading2.reset(new novatel_oem7_msgs::msg::HEADING2);
+  heading2.reset(new novatel_oem7_msgs::HEADING2);
 
   heading2->sol_status.status     = mem->sol_status;
   heading2->pos_type.type         = mem->pos_type;
@@ -107,8 +116,8 @@ MakeROSMessage<novatel_oem7_msgs::msg::HEADING2>(
   heading2->reserved              = mem->reserved;
   heading2->heading_stdev         = mem->heading_stdev;
   heading2->pitch_stdev           = mem->pitch_stdev;
-  std::copy(std::begin(mem->rover_stn_id),  std::end(mem->rover_stn_id),  std::begin(heading2->rover_stn_id));
-  std::copy(std::begin(mem->master_stn_id), std::end(mem->master_stn_id), std::begin(heading2->master_stn_id));
+  heading2->rover_stn_id.assign( mem->rover_stn_id,    arr_size(mem->rover_stn_id));
+  heading2->master_stn_id.assign(mem->master_stn_id,   arr_size(mem->rover_stn_id));
   heading2->num_sv_tracked          = mem->num_sv_tracked;
   heading2->num_sv_in_sol           = mem->num_sv_in_sol;
   heading2->num_sv_obs              = mem->num_sv_obs;
@@ -124,137 +133,14 @@ MakeROSMessage<novatel_oem7_msgs::msg::HEADING2>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::BESTPOS>(
+MakeROSMessage<novatel_oem7_msgs::BESTGNSSPOS>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::BESTPOS>& bestpos)
-{
-  assert(msg->getMessageId() == BESTPOS_OEM7_MSGID);
-
-  const BESTPOSMem* bp = reinterpret_cast<const BESTPOSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  bestpos.reset(new novatel_oem7_msgs::msg::BESTPOS);
-
-  bestpos->sol_status.status      = bp->sol_stat;
-  bestpos->pos_type.type          = bp->pos_type;
-  bestpos->lat                    = bp->lat;
-  bestpos->lon                    = bp->lon;
-  bestpos->hgt                    = bp->hgt;
-  bestpos->undulation             = bp->undulation;
-  bestpos->datum_id               = bp->datum_id;
-  bestpos->lat_stdev              = bp->lat_stdev;
-  bestpos->lon_stdev              = bp->lon_stdev;
-  bestpos->hgt_stdev              = bp->hgt_stdev;
-  std::copy(std::begin(bp->stn_id), std::end(bp->stn_id), std::begin(bestpos->stn_id));
-  bestpos->diff_age               = bp->diff_age;
-  bestpos->sol_age                = bp->sol_age;
-  bestpos->num_svs                = bp->num_svs;
-  bestpos->num_sol_svs            = bp->num_sol_svs;
-  bestpos->num_sol_l1_svs         = bp->num_sol_l1_svs;
-  bestpos->num_sol_multi_svs      = bp->num_sol_multi_svs;
-  bestpos->reserved               = bp->reserved;
-  bestpos->ext_sol_stat.status    = bp->ext_sol_stat;
-  bestpos->galileo_beidou_sig_mask= bp->galileo_beidou_sig_mask;
-  bestpos->gps_glonass_sig_mask   = bp->gps_glonass_sig_mask;
-
-  static const std::string name = "BESTPOS";
-  SetOem7Header(msg, name, bestpos->nov_header);
-}
-
-template<>
-void
-MakeROSMessage<novatel_oem7_msgs::msg::BESTVEL>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::BESTVEL>& bestvel)
-{
-  assert(msg->getMessageId() == BESTVEL_OEM7_MSGID);
-
-  const BESTVELMem* bv = reinterpret_cast<const BESTVELMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  bestvel.reset(new novatel_oem7_msgs::msg::BESTVEL);
-
-  bestvel->sol_status.status = bv->sol_stat;
-  bestvel->vel_type.type     = bv->vel_type;
-  bestvel->latency           = bv->latency;
-  bestvel->diff_age          = bv->diff_age;
-  bestvel->hor_speed         = bv->hor_speed;
-  bestvel->trk_gnd           = bv->track_gnd;
-  bestvel->ver_speed         = bv->ver_speed;
-  bestvel->reserved          = bv->reserved;
-
-  static const std::string name = "BESTVEL";
-  SetOem7Header(msg, name, bestvel->nov_header);
-}
-
-template<>
-void
-MakeROSMessage<novatel_oem7_msgs::msg::BESTGNSSVEL>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::BESTGNSSVEL>& bestgnssvel)
-{
-  assert(msg->getMessageId() == BESTGNSSVEL_OEM7_MSGID);
-
-  const BESTGNSSVELMem* bgv = reinterpret_cast<const BESTGNSSVELMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  bestgnssvel.reset(new novatel_oem7_msgs::msg::BESTGNSSVEL);
-
-  bestgnssvel->sol_status.status = bgv->sol_stat;
-  bestgnssvel->vel_type.type     = bgv->vel_type;
-  bestgnssvel->latency           = bgv->latency;
-  bestgnssvel->diff_age          = bgv->diff_age;
-  bestgnssvel->hor_speed         = bgv->hor_speed;
-  bestgnssvel->trk_gnd           = bgv->track_gnd;
-  bestgnssvel->ver_speed         = bgv->ver_speed;
-  bestgnssvel->reserved          = bgv->reserved;
-
-  static const std::string name = "BESTGNSSVEL";
-  SetOem7Header(msg, name, bestgnssvel->nov_header);
-}
-
-template<>
-void
-MakeROSMessage<novatel_oem7_msgs::msg::BESTUTM>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::BESTUTM>& bestutm)
-{
-    assert(msg->getMessageId() == BESTUTM_OEM7_MSGID);
-
-    const BESTUTMMem* mem = reinterpret_cast<const BESTUTMMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-    bestutm.reset(new novatel_oem7_msgs::msg::BESTUTM);
-
-    bestutm->pos_type.type          = mem->pos_type;;
-    bestutm->lon_zone_number        = mem->lon_zone_number;
-    bestutm->lat_zone_letter        = mem->lat_zone_letter;
-    bestutm->northing               = mem->northing;
-    bestutm->easting                = mem->easting;
-    bestutm->height                 = mem->height;
-    bestutm->undulation             = mem->undulation;
-    bestutm->datum_id               = mem->datum_id;
-    bestutm->northing_stddev        = mem->northing_stddev;
-    bestutm->easting_stddev         = mem->easting_stddev;
-    bestutm->height_stddev          = mem->height_stddev;
-    std::copy(std::begin(mem->stn_id), std::end(mem->stn_id), std::begin(bestutm->stn_id));
-    bestutm->diff_age               = mem->diff_age;
-    bestutm->sol_age                = mem->sol_age;
-    bestutm->num_svs                = mem->num_svs;
-    bestutm->num_sol_svs            = mem->num_sol_svs;
-    bestutm->num_sol_ggl1_svs       = mem->num_sol_ggl1_svs;
-    bestutm->num_sol_multi_svs      = mem->num_sol_multi_svs;
-    bestutm->reserved               = mem->reserved;
-    bestutm->ext_sol_stat.status    = mem->ext_sol_stat;
-    bestutm->galileo_beidou_sig_mask= mem->galileo_beidou_sig_mask;
-    bestutm->gps_glonass_sig_mask   = mem->gps_glonass_sig_mask;
-
-    static const std::string name = "BESTUTM";
-    SetOem7Header(msg, name, bestutm->nov_header);
-  }
-
-template<>
-void
-MakeROSMessage<novatel_oem7_msgs::msg::BESTGNSSPOS>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::BESTGNSSPOS>& bestgnsspos)
+    boost::shared_ptr<novatel_oem7_msgs::BESTGNSSPOS>& bestgnsspos)
 {
   assert(msg->getMessageId() == BESTGNSSPOS_OEM7_MSGID);
 
   const BESTGNSSPOSMem* bgp = reinterpret_cast<const BESTGNSSPOSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  bestgnsspos.reset(new novatel_oem7_msgs::msg::BESTGNSSPOS);
+  bestgnsspos.reset(new novatel_oem7_msgs::BESTGNSSPOS);
 
   bestgnsspos->sol_status.status      = bgp->sol_stat;
   bestgnsspos->pos_type.type          = bgp->pos_type;
@@ -284,14 +170,197 @@ MakeROSMessage<novatel_oem7_msgs::msg::BESTGNSSPOS>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::INSPVA>(
+MakeROSMessage<novatel_oem7_msgs::BESTPOS>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::INSPVA>& pva)
+    boost::shared_ptr<novatel_oem7_msgs::BESTPOS>& bestpos)
+{
+  assert(msg->getMessageId() == BESTPOS_OEM7_MSGID);
+
+  const BESTPOSMem* bp = reinterpret_cast<const BESTPOSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+  bestpos.reset(new novatel_oem7_msgs::BESTPOS);
+
+  bestpos->sol_status.status      = bp->sol_stat;
+  bestpos->pos_type.type          = bp->pos_type;
+  bestpos->lat                    = bp->lat;
+  bestpos->lon                    = bp->lon;
+  bestpos->hgt                    = bp->hgt;
+  bestpos->undulation             = bp->undulation;
+  bestpos->datum_id               = bp->datum_id;
+  bestpos->lat_stdev              = bp->lat_stdev;
+  bestpos->lon_stdev              = bp->lon_stdev;
+  bestpos->hgt_stdev              = bp->hgt_stdev;
+  bestpos->stn_id.assign(           bp->stn_id, arr_size(bp->stn_id));
+  bestpos->diff_age               = bp->diff_age;
+  bestpos->sol_age                = bp->sol_age;
+  bestpos->num_svs                = bp->num_svs;
+  bestpos->num_sol_svs            = bp->num_sol_svs;
+  bestpos->num_sol_l1_svs         = bp->num_sol_l1_svs;
+  bestpos->num_sol_multi_svs      = bp->num_sol_multi_svs;
+  bestpos->reserved               = bp->reserved;
+  bestpos->ext_sol_stat.status    = bp->ext_sol_stat;
+  bestpos->galileo_beidou_sig_mask= bp->galileo_beidou_sig_mask;
+  bestpos->gps_glonass_sig_mask   = bp->gps_glonass_sig_mask;
+
+  static const std::string name = "BESTPOS";
+  SetOem7Header(msg, name, bestpos->nov_header);
+}
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::BESTVEL>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::BESTVEL>& bestvel)
+{
+  assert(msg->getMessageId() == BESTVEL_OEM7_MSGID);
+
+  const BESTVELMem* bv = reinterpret_cast<const BESTVELMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+  bestvel.reset(new novatel_oem7_msgs::BESTVEL);
+
+  bestvel->sol_status.status = bv->sol_stat;
+  bestvel->vel_type.type     = bv->vel_type;
+  bestvel->latency           = bv->latency;
+  bestvel->diff_age          = bv->diff_age;
+  bestvel->hor_speed         = bv->hor_speed;
+  bestvel->trk_gnd           = bv->track_gnd;
+  bestvel->ver_speed         = bv->ver_speed;
+  bestvel->reserved          = bv->reserved;
+
+  static const std::string name = "BESTVEL";
+  SetOem7Header(msg, name, bestvel->nov_header);
+}
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::BESTUTM>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::BESTUTM>& bestutm)
+{
+    assert(msg->getMessageId() == BESTUTM_OEM7_MSGID);
+
+    const BESTUTMMem* mem = reinterpret_cast<const BESTUTMMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+    bestutm.reset(new novatel_oem7_msgs::BESTUTM);
+
+    bestutm->pos_type.type          = mem->pos_type;;
+    bestutm->lon_zone_number        = mem->lon_zone_number;
+    bestutm->lat_zone_letter        = mem->lat_zone_letter;
+    bestutm->northing               = mem->northing;
+    bestutm->easting                = mem->easting;
+    bestutm->height                 = mem->height;
+    bestutm->undulation             = mem->undulation;
+    bestutm->datum_id               = mem->datum_id;
+    bestutm->northing_stddev        = mem->northing_stddev;
+    bestutm->easting_stddev         = mem->easting_stddev;
+    bestutm->height_stddev          = mem->height_stddev;
+    bestutm->stn_id.assign(           mem->stn_id, arr_size(mem->stn_id));
+    bestutm->diff_age               = mem->diff_age;
+    bestutm->sol_age                = mem->sol_age;
+    bestutm->num_svs                = mem->num_svs;
+    bestutm->num_sol_svs            = mem->num_sol_svs;
+    bestutm->num_sol_ggl1_svs       = mem->num_sol_ggl1_svs;
+    bestutm->num_sol_multi_svs      = mem->num_sol_multi_svs;
+    bestutm->reserved               = mem->reserved;
+    bestutm->ext_sol_stat.status    = mem->ext_sol_stat;
+    bestutm->galileo_beidou_sig_mask= mem->galileo_beidou_sig_mask;
+    bestutm->gps_glonass_sig_mask   = mem->gps_glonass_sig_mask;
+
+    static const std::string name = "BESTUTM";
+    SetOem7Header(msg, name, bestutm->nov_header);
+  }
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::PPPPOS>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::PPPPOS>& ppppos)
+{
+  assert(msg->getMessageId() == PPPPOS_OEM7_MSGID);
+
+  const PPPPOSMem* pp = reinterpret_cast<const PPPPOSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+  ppppos.reset(new novatel_oem7_msgs::PPPPOS);
+
+  ppppos->sol_status.status      = pp->sol_stat;
+  ppppos->pos_type.type          = pp->pos_type;
+  ppppos->lat                    = pp->lat;
+  ppppos->lon                    = pp->lon;
+  ppppos->hgt                    = pp->hgt;
+  ppppos->undulation             = pp->undulation;
+  ppppos->datum_id               = pp->datum_id;
+  ppppos->lat_stdev              = pp->lat_stdev;
+  ppppos->lon_stdev              = pp->lon_stdev;
+  ppppos->hgt_stdev              = pp->hgt_stdev;
+  ppppos->stn_id.assign(           pp->stn_id, arr_size(pp->stn_id));
+  ppppos->diff_age               = pp->diff_age;
+  ppppos->sol_age                = pp->sol_age;
+  ppppos->num_svs                = pp->num_svs;
+  ppppos->num_sol_svs            = pp->num_sol_svs;
+  ppppos->num_sol_l1_svs         = pp->num_sol_l1_svs;
+  ppppos->num_sol_multi_svs      = pp->num_sol_multi_svs;
+  ppppos->reserved               = pp->reserved;
+  ppppos->ext_sol_stat.status    = pp->ext_sol_stat;
+  ppppos->reserved2              = pp->reserved2;
+  ppppos->gps_glonass_sig_mask   = pp->gps_glonass_sig_mask;
+
+  static const std::string name = "PPPPOS";
+  SetOem7Header(msg, name, ppppos->nov_header);
+}
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::TERRASTARINFO>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::TERRASTARINFO>& terrastarinfo)
+{
+  assert(msg->getMessageId() == TERRASTARINFO_OEM7_MSGID);
+
+  const TERRASTARINFOMem* tsi = reinterpret_cast<const TERRASTARINFOMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+  terrastarinfo.reset(new novatel_oem7_msgs::TERRASTARINFO);
+
+  terrastarinfo->product_activation_code        = tsi->product_activation_code;
+  terrastarinfo->sub_type.type                  = tsi->sub_type;
+  terrastarinfo->sub_permission.permission      = tsi->sub_permission;
+  terrastarinfo->service_end_day_of_year        = tsi->service_end_day_of_year;
+  terrastarinfo->service_end_year               = tsi->service_end_year;
+  terrastarinfo->reserved                       = tsi->reserved;
+  terrastarinfo->region_restriction.restriction = tsi->region_restriction;
+  terrastarinfo->center_point_latitude          = tsi->center_point_latitude;
+  terrastarinfo->center_point_longitude         = tsi->center_point_longitude;
+  terrastarinfo->radius                         = tsi->radius;
+
+  static const std::string name = "TERRASTARINFO";
+  SetOem7Header(msg, name, terrastarinfo->nov_header);
+}
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::TERRASTARSTATUS>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::TERRASTARSTATUS>& terrastarstatus)
+{
+  assert(msg->getMessageId() == TERRASTARSTATUS_OEM7_MSGID);
+
+  const TERRASTARSTATUSMem* tss = reinterpret_cast<const TERRASTARSTATUSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
+  terrastarstatus.reset(new novatel_oem7_msgs::TERRASTARSTATUS);
+
+  terrastarstatus->access_status.status      = tss->access_status;
+  terrastarstatus->sync_state.state          = tss->sync_state;
+  terrastarstatus->reserved                  = tss->reserved;
+  terrastarstatus->local_area_status.status  = tss->local_area_status;
+  terrastarstatus->geo_status.status         = tss->geo_status;
+
+  static const std::string name = "TERRASTARSTATUS";
+  SetOem7Header(msg, name, terrastarstatus->nov_header);
+}
+
+template<>
+void
+MakeROSMessage<novatel_oem7_msgs::INSPVA>(
+    const Oem7RawMessageIf::ConstPtr& msg,
+    boost::shared_ptr<novatel_oem7_msgs::INSPVA>& pva)
 {
   assert(msg->getMessageId() == INSPVAS_OEM7_MSGID);
 
   const INSPVASmem* pvamem = reinterpret_cast<const INSPVASmem*>(msg->getMessageData(OEM7_BINARY_MSG_SHORT_HDR_LEN));
-  pva.reset(new novatel_oem7_msgs::msg::INSPVA);
+  pva.reset(new novatel_oem7_msgs::INSPVA);
 
   pva->latitude        =     pvamem->latitude;
   pva->longitude       =     pvamem->longitude;
@@ -311,15 +380,15 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSPVA>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::INSCONFIG>(
+MakeROSMessage<novatel_oem7_msgs::INSCONFIG>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::INSCONFIG>& insconfig)
+    boost::shared_ptr<novatel_oem7_msgs::INSCONFIG>& insconfig)
 {
   assert(msg->getMessageId()== INSCONFIG_OEM7_MSGID);
 
   const INSCONFIG_FixedMem* insconfigmem =
       reinterpret_cast<const INSCONFIG_FixedMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  insconfig.reset(new novatel_oem7_msgs::msg::INSCONFIG);
+  insconfig.reset(new novatel_oem7_msgs::INSCONFIG);
 
   insconfig->imu_type                         = insconfigmem->imu_type;
   insconfig->mapping                          = insconfigmem->mapping;
@@ -357,7 +426,7 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSCONFIG>(
              idx++)
   {
     const INSCONFIG_TranslationMem* trmem = Get_INSCONFIG_Translation(insconfigmem, idx);
-    novatel_oem7_msgs::msg::Translation& tr = insconfig->translations[idx];
+    novatel_oem7_msgs::Translation& tr = insconfig->translations[idx];
 
     tr.translation.type    = trmem->translation;
     tr.frame.frame         = trmem->frame;
@@ -376,7 +445,7 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSCONFIG>(
              idx++)
   {
     const INSCONFIG_RotationMem* rtmem = Get_INSCONFIG_Rotation(insconfigmem, idx);
-    novatel_oem7_msgs::msg::Rotation& rt = insconfig->rotations[idx];
+    novatel_oem7_msgs::Rotation& rt = insconfig->rotations[idx];
     rt.rotation.offset         = rtmem->rotation;
     rt.frame.frame             = rtmem->frame;
     rt.x_rotation              = rtmem->x_rotation;
@@ -395,14 +464,14 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSCONFIG>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::INSPVAX>(
+MakeROSMessage<novatel_oem7_msgs::INSPVAX>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::INSPVAX>& inspvax)
+    boost::shared_ptr<novatel_oem7_msgs::INSPVAX>& inspvax)
 {
   assert(msg->getMessageId() == INSPVAX_OEM7_MSGID);
 
   const INSPVAXMem* mem = reinterpret_cast<const INSPVAXMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  inspvax.reset(new novatel_oem7_msgs::msg::INSPVAX);
+  inspvax.reset(new novatel_oem7_msgs::INSPVAX);
 
   inspvax->ins_status.status        = mem->ins_status;
   inspvax->pos_type.type            = mem->pos_type;
@@ -435,14 +504,14 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSPVAX>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::INSSTDEV>(
+MakeROSMessage<novatel_oem7_msgs::INSSTDEV>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::INSSTDEV>& insstdev)
+    boost::shared_ptr<novatel_oem7_msgs::INSSTDEV>& insstdev)
 {
   assert(msg->getMessageId() == INSSTDEV_OEM7_MSGID);
 
   const INSSTDEVMem* raw = reinterpret_cast<const INSSTDEVMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  insstdev.reset(new novatel_oem7_msgs::msg::INSSTDEV);
+  insstdev.reset(new novatel_oem7_msgs::INSSTDEV);
 
   insstdev->latitude_stdev         = raw->latitude_stdev;
   insstdev->longitude_stdev        = raw->longitude_stdev;
@@ -465,11 +534,11 @@ MakeROSMessage<novatel_oem7_msgs::msg::INSSTDEV>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::CORRIMU>(
+MakeROSMessage<novatel_oem7_msgs::CORRIMU>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::CORRIMU>& corrimu)
+    boost::shared_ptr<novatel_oem7_msgs::CORRIMU>& corrimu)
 {
-  corrimu.reset(new novatel_oem7_msgs::msg::CORRIMU);
+  corrimu.reset(new novatel_oem7_msgs::CORRIMU);
 
   if(msg->getMessageId() == CORRIMUS_OEM7_MSGID)
   {
@@ -486,7 +555,7 @@ MakeROSMessage<novatel_oem7_msgs::msg::CORRIMU>(
   {
     const IMURATECORRIMUSMem* raw =
         reinterpret_cast<const IMURATECORRIMUSMem*>(msg->getMessageData(OEM7_BINARY_MSG_SHORT_HDR_LEN));
-    corrimu->imu_data_count   = 1; 
+    corrimu->imu_data_count   = 1;
     corrimu->pitch_rate       = raw->pitch_rate;
     corrimu->roll_rate        = raw->roll_rate;
     corrimu->yaw_rate         = raw->yaw_rate;
@@ -505,41 +574,14 @@ MakeROSMessage<novatel_oem7_msgs::msg::CORRIMU>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::RAWIMUSX>(
+MakeROSMessage<novatel_oem7_msgs::TIME>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::RAWIMUSX>& rawimusx)
-{
-  rawimusx.reset(new novatel_oem7_msgs::msg::RAWIMUSX);
-
-  const RAWIMUSXMem* raw = reinterpret_cast<const RAWIMUSXMem*>(msg->getMessageData(OEM7_BINARY_MSG_SHORT_HDR_LEN));
-  
-  rawimusx->imu_info          = raw->imu_info;
-  rawimusx->imu_type          = raw->imu_type;
-  rawimusx->gnss_week         = raw->gnss_week;
-  rawimusx->gnss_week_seconds = raw->gnss_week_seconds;
-  std::copy(std::begin(raw->imu_status),  std::end(raw->imu_status),  std::begin(rawimusx->imu_status));
-  rawimusx->z_acc             = raw->z_acc;
-  rawimusx->y_acc             = raw->y_acc;
-  rawimusx->x_acc             = raw->x_acc;
-  rawimusx->z_gyro            = raw->z_gyro;
-  rawimusx->y_gyro            = raw->y_gyro;
-  rawimusx->x_gyro            = raw->x_gyro;
-
-
-  static const std::string name = "RAWIMUSX";
-  SetOem7ShortHeader(msg, name, rawimusx->nov_header);
-}
-
-template<>
-void
-MakeROSMessage<novatel_oem7_msgs::msg::TIME>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::TIME>& time)
+    boost::shared_ptr<novatel_oem7_msgs::TIME>& time)
 {
   assert(msg->getMessageId()== TIME_OEM7_MSGID);
 
   const TIMEMem* mem = reinterpret_cast<const TIMEMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  time.reset(new novatel_oem7_msgs::msg::TIME);
+  time.reset(new novatel_oem7_msgs::TIME);
 
   time->clock_status  = mem->clock_status;
   time->offset        = mem->offset;
@@ -559,14 +601,14 @@ MakeROSMessage<novatel_oem7_msgs::msg::TIME>(
 
 template<>
 void
-MakeROSMessage<novatel_oem7_msgs::msg::RXSTATUS>(
+MakeROSMessage<novatel_oem7_msgs::RXSTATUS>(
     const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::RXSTATUS>& rxstatus)
+    boost::shared_ptr<novatel_oem7_msgs::RXSTATUS>& rxstatus)
 {
   assert(msg->getMessageId() == RXSTATUS_OEM7_MSGID);
 
   const RXSTATUSMem* mem = reinterpret_cast<const RXSTATUSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  rxstatus.reset(new novatel_oem7_msgs::msg::RXSTATUS);
+  rxstatus.reset(new novatel_oem7_msgs::RXSTATUS);
 
   rxstatus->error              = mem->error;
   rxstatus->num_status_codes   = mem->num_status_codes;
@@ -596,154 +638,63 @@ MakeROSMessage<novatel_oem7_msgs::msg::RXSTATUS>(
   SetOem7Header(msg, name, rxstatus->nov_header);
 };
 
-template<>
+
+template
 void
-MakeROSMessage<novatel_oem7_msgs::msg::PPPPOS>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::PPPPOS>& ppppos)
-{
-  assert(msg->getMessageId() == PPPPOS_OEM7_MSGID);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::BESTGNSSPOS>&);
 
-  const PPPPOSMem* pp = reinterpret_cast<const PPPPOSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  ppppos.reset(new novatel_oem7_msgs::msg::PPPPOS);
-
-  ppppos->sol_status.status      = pp->sol_stat;
-  ppppos->pos_type.type          = pp->pos_type;
-  ppppos->lat                    = pp->lat;
-  ppppos->lon                    = pp->lon;
-  ppppos->hgt                    = pp->hgt;
-  ppppos->undulation             = pp->undulation;
-  ppppos->datum_id               = pp->datum_id;
-  ppppos->lat_stdev              = pp->lat_stdev;
-  ppppos->lon_stdev              = pp->lon_stdev;
-  ppppos->hgt_stdev              = pp->hgt_stdev;
-  ppppos->stn_id.assign(           pp->stn_id, arr_size(pp->stn_id));
-  ppppos->diff_age               = pp->diff_age;
-  ppppos->sol_age                = pp->sol_age;
-  ppppos->num_svs                = pp->num_svs;
-  ppppos->num_sol_svs            = pp->num_sol_svs;
-  ppppos->num_sol_l1_svs         = pp->num_sol_l1_svs;
-  ppppos->num_sol_multi_svs      = pp->num_sol_multi_svs;
-  ppppos->reserved               = pp->reserved;
-  ppppos->ext_sol_stat.status    = pp->ext_sol_stat;
-  ppppos->reserved2              = pp->reserved2;
-  ppppos->gps_glonass_sig_mask   = pp->gps_glonass_sig_mask;
-
-  static const std::string name = "PPPPOS";
-  SetOem7Header(msg, name, ppppos->nov_header);
-}
-
-template<>
+template
 void
-MakeROSMessage<novatel_oem7_msgs::msg::TERRASTARINFO>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::TERRASTARINFO>& terrastarinfo)
-{
-  assert(msg->getMessageId() == TERRASTARINFO_OEM7_MSGID);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::BESTPOS>&);
 
-  const TERRASTARINFOMem* tsi = reinterpret_cast<const TERRASTARINFOMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  terrastarinfo.reset(new novatel_oem7_msgs::msg::TERRASTARINFO);
-
-  terrastarinfo->product_activation_code        = tsi->product_activation_code;
-  terrastarinfo->sub_type.type                  = tsi->sub_type;
-  terrastarinfo->sub_permission.permission      = tsi->sub_permission;
-  terrastarinfo->service_end_day_of_year        = tsi->service_end_day_of_year;
-  terrastarinfo->service_end_year               = tsi->service_end_year;
-  terrastarinfo->reserved                       = tsi->reserved;
-  terrastarinfo->region_restriction.restriction = tsi->region_restriction;
-  terrastarinfo->center_point_latitude          = tsi->center_point_latitude;
-  terrastarinfo->center_point_longitude         = tsi->center_point_longitude;
-  terrastarinfo->radius                         = tsi->radius;
-
-  static const std::string name = "TERRASTARINFO";
-  SetOem7Header(msg, name, terrastarinfo->nov_header);
-}
-
-template<>
+template
 void
-MakeROSMessage<novatel_oem7_msgs::msg::TERRASTARSTATUS>(
-    const Oem7RawMessageIf::ConstPtr& msg,
-    std::shared_ptr<novatel_oem7_msgs::msg::TERRASTARSTATUS>& terrastarstatus)
-{
-  assert(msg->getMessageId() == TERRASTARSTATUS_OEM7_MSGID);
-
-  const TERRASTARSTATUSMem* tss = reinterpret_cast<const TERRASTARSTATUSMem*>(msg->getMessageData(OEM7_BINARY_MSG_HDR_LEN));
-  terrastarstatus.reset(new novatel_oem7_msgs::msg::TERRASTARSTATUS);
-
-  terrastarstatus->access_status.status      = tss->access_status;
-  terrastarstatus->sync_state.state          = tss->sync_state;
-  terrastarstatus->reserved                  = tss->reserved;
-  terrastarstatus->local_area_status.status  = tss->local_area_status;
-  terrastarstatus->geo_status.status         = tss->geo_status;
-
-  static const std::string name = "TERRASTARSTATUS";
-  SetOem7Header(msg, name, terrastarstatus->nov_header);
-}
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::BESTVEL>&);
 
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, std::shared_ptr<novatel_oem7_msgs::msg::BESTPOS>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::BESTUTM>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::BESTVEL>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::PPPPOS>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::BESTGNSSVEL>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::TERRASTARINFO>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::BESTUTM>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::TERRASTARSTATUS>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::BESTGNSSPOS>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::INSPVA>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::INSPVA>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, boost::shared_ptr<novatel_oem7_msgs::INSPVAX>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&, std::shared_ptr<novatel_oem7_msgs::msg::INSPVAX>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::INSCONFIG>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::INSCONFIG>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::INSSTDEV>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::INSSTDEV>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::CORRIMU>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::CORRIMU>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::TIME>&);
 
 template
 void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::RAWIMUSX>&);
-
-template
-void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::TIME>&);
-
-template
-void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::RXSTATUS>&);
-
-template
-void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::PPPPOS>&);
-
-template
-void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::TERRASTARSTATUS>&);
-
-template
-void
-MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  std::shared_ptr<novatel_oem7_msgs::msg::TERRASTARINFO>&);
+MakeROSMessage(const Oem7RawMessageIf::ConstPtr&,  boost::shared_ptr<novatel_oem7_msgs::RXSTATUS>&);
 
 
 //---------------------------------------------------------------------------------------------------------------

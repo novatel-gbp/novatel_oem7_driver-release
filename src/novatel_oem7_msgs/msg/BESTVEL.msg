@@ -1,4 +1,4 @@
-std_msgs/Header         header
+Header                  header
 Oem7Header              nov_header
 SolutionStatus          sol_status
 PositionOrVelocityType  vel_type

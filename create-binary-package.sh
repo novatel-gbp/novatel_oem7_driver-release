@@ -4,7 +4,7 @@ UBUNTU_TGT_DISTRO=$1
 ROS_TGT_DISTRO=$2
 
 echo build | sudo -S rosdep init # this usually fails with harmless error
-rosdep update --include-eol-distros
+rosdep update
 
 rm *.deb
 rm src/*.deb

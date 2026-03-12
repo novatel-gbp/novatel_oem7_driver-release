@@ -26,9 +26,10 @@
 #include <novatel_oem7_driver/oem7_message_handler_if.hpp>
 
 
+#include <ros/ros.h>
 
 #include <novatel_oem7_driver/oem7_ros_messages.hpp>
-#include <novatel_oem7_msgs/msg/heading2.hpp>
+#include <novatel_oem7_msgs/HEADING2.h>
 
 #include <oem7_ros_publisher.hpp>
 
@@ -41,15 +42,14 @@ namespace novatel_oem7_driver
    */
   class ALIGNHandler: public Oem7MessageHandlerIf
   {
-    std::unique_ptr<Oem7RosPublisher<novatel_oem7_msgs::msg::HEADING2>> HEADING2_pub_; ///< Publisher for NMEA sentences;
-
+    Oem7RosPublisher HEADING2_pub_;
 
     void publishHEADING2(
         Oem7RawMessageIf::ConstPtr msg)
     {
-      std::shared_ptr<novatel_oem7_msgs::msg::HEADING2> heading2;
+      boost::shared_ptr<novatel_oem7_msgs::HEADING2> heading2;
       MakeROSMessage(msg, heading2);
-      HEADING2_pub_->publish(heading2);
+      HEADING2_pub_.publish(heading2);
     }
 
   public:
@@ -61,23 +61,25 @@ namespace novatel_oem7_driver
     {
     }
 
-    void initialize(rclcpp::Node& node)
+    void initialize(ros::NodeHandle& nh)
     {
-      HEADING2_pub_ = std::make_unique<Oem7RosPublisher<novatel_oem7_msgs::msg::HEADING2>>("HEADING2", node);
+      HEADING2_pub_.setup<novatel_oem7_msgs::HEADING2>("HEADING2", nh);
     }
 
-    const MessageIdRecords& getMessageIds()
+    const std::vector<int>& getMessageIds()
     {
-      static const MessageIdRecords MSG_IDS({{HEADING2_OEM7_MSGID, MSGFLAG_NONE}});
+      static const std::vector<int> MSG_IDS({HEADING2_OEM7_MSGID});
       return MSG_IDS;
     }
 
     void handleMsg(Oem7RawMessageIf::ConstPtr msg)
     {
+      ROS_DEBUG_STREAM("ALIGN < [id= " <<  msg->getMessageId() << "]");
+
       publishHEADING2(msg);
     }
   };
 }
 
-#include <pluginlib/class_list_macros.hpp>
+#include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(novatel_oem7_driver::ALIGNHandler, novatel_oem7_driver::Oem7MessageHandlerIf)

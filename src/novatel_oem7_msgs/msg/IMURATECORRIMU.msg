@@ -1,4 +1,4 @@
-std_msgs/Header  header
+Header           header
 Oem7Header       nov_header
 uint32           week
 float64          seconds

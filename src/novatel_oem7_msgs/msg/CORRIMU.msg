@@ -1,4 +1,4 @@
-std_msgs/Header  header
+Header           header
 Oem7Header       nov_header
 uint32           imu_data_count
 float64          pitch_rate

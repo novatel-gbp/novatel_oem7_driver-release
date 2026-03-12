@@ -1,3 +1,5 @@
 novatel_oem7_msgs: 
     ubuntu: 
-        noble:  [ros-jazzy-novatel-oem7-msgs]
+        xenial: [ros-kinetic-novatel-oem7-msgs]
+        bionic: [ros-melodic-novatel-oem7-msgs]
+        focal:  [ros-noetic-novatel-oem7-msgs]
