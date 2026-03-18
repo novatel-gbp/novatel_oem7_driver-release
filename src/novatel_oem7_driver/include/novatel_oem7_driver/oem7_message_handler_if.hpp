@@ -26,32 +26,41 @@
 #define __OEM7_MESSAGE_HANDLER_IF_HPP__
 
 
-#include <ros/ros.h>
-
 #include <vector>
 
 #include "oem7_raw_message_if.hpp"
 using novatel_oem7::Oem7RawMessageIf;
 
+#include <rclcpp/rclcpp.hpp>
+
 namespace novatel_oem7_driver
 {
+
+  // Flags describing message semantics
+  const unsigned int MSGFLAG_NONE             = 0;            ///< None; can be used for initialiation.
+  const unsigned int MSGFLAG_STATUS_OR_CONFIG = 1 << 0;       ///< Message reports receiver status or configuration. 
+  const unsigned int MSGFLAG_ALL              = 0xFFFFFFFF;   ///< All flags set
+
   /**
    * Interface implemented by modules handling Oem7RawMessageIf messages
    */
   class Oem7MessageHandlerIf
   {
   public:
+    typedef std::pair<int, unsigned int> MessageIdRecord;
+    typedef std::vector<MessageIdRecord> MessageIdRecords;
+
     virtual ~Oem7MessageHandlerIf(){};
 
     /**
      * Initializes the handler
      */
-    virtual void initialize(ros::NodeHandle&) = 0;
+    virtual void initialize(rclcpp::Node&) = 0;
 
     /**
      * @return a vector of Oem7 message IDs to be handled by this Handler.
      */
-    virtual const std::vector<int>& getMessageIds() = 0;
+    virtual const MessageIdRecords& getMessageIds() = 0;
 
     /**
      * Handle a message

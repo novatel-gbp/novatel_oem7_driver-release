@@ -1,4 +1,4 @@
-Header                          header
+std_msgs/Header                 header
 Oem7Header                      nov_header
 string                          product_activation_code
 SubscriptionType                sub_type
