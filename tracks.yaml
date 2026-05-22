@@ -69,10 +69,10 @@ tracks:
     - git-bloom-generate -y rosdynrpm --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc} --require-os fedora rhel
     devel_branch: kilted
-    last_version: 4.3.0
+    last_version: 28.0.0
     name: novatel_oem7_driver
     patches: null
-    release_inc: '2'
+    release_inc: '1'
     release_repo_url: null
     release_tag: :{version}
     ros_distro: kilted
