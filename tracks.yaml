@@ -66,7 +66,9 @@ tracks:
       :{release_inc} --os-name fedora
     - git-bloom-generate -y rosrpm --prefix release/:{ros_distro} :{ros_distro} -i
       :{release_inc} --os-name rhel
-    devel_branch: ros1
+    - git-bloom-generate -y rosdynrpm --prefix release/:{ros_distro} :{ros_distro}
+      -i :{release_inc} --require-os fedora rhel
+    devel_branch: kilted
     last_version: 4.3.0
     name: novatel_oem7_driver
     patches: null
@@ -76,7 +78,7 @@ tracks:
     ros_distro: kilted
     vcs_type: git
     vcs_uri: https://github.com/novatel/novatel_oem7_driver.git
-    version: :{auto}
+    version: 28.0.0
   kinetic:
     actions:
     - bloom-export-upstream :{vcs_local_uri} :{vcs_type} --tag :{release_tag} --display-uri
