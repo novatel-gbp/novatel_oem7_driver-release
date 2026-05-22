@@ -1,0 +1,12 @@
+Source: ros-kilted-novatel-oem7-msgs
+Section: misc
+Priority: optional
+Maintainer: "NovAtel Support" <support.novatel@hexagon.com>
+Build-Depends: debhelper (>= 9.0.0), ros-kilted-ament-cmake, ros-kilted-rosidl-default-generators, ros-kilted-std-msgs, ros-kilted-ros-workspace, ros-kilted-rosidl-typesupport-fastrtps-c, ros-kilted-rosidl-typesupport-fastrtps-cpp
+Homepage: http://www.novatel.com
+Standards-Version: 3.9.2
+
+Package: ros-kilted-novatel-oem7-msgs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kilted-rosidl-default-runtime, ros-kilted-std-msgs, ros-kilted-ros-workspace
+Description: Messages for NovAtel Oem7 family of receivers.
