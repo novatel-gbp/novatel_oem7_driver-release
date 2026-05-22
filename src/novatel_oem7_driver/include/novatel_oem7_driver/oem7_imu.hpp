@@ -56,7 +56,7 @@ enum oem7_imu_type_t
 };
 
 
-typedef int imu_rate_t; ///< IMU message output rate. Refer to INSCONFIG in the OEM7 manual.s
+typedef int oem7_imu_rate_t; ///< IMU message output rate. Refer to INSCONFIG in the OEM7 manual.s
 
 ///
 /// Obtain scaling factors for raw IMU output (as reported by RAWIMUS etc).
@@ -68,7 +68,7 @@ typedef int imu_rate_t; ///< IMU message output rate. Refer to INSCONFIG in the 
 bool
 getImuRawScaleFactors(
     oem7_imu_type_t imu_type, ///< IMU type.
-    imu_rate_t      imu_rate, ///< IMU rate; needed because some IMUs report instantaneous rate.
+    oem7_imu_rate_t imu_rate, ///< IMU rate; needed because some IMUs report instantaneous rate.
     double& gyro_scale,       ///< Gyroscope scale factor
     double& acc_scale         ///< Accelerometer scale factor
     );
