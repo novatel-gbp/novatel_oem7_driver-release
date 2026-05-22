@@ -1,0 +1,12 @@
+Source: ros-kilted-novatel-oem7-driver
+Section: misc
+Priority: optional
+Maintainer: "NovAtel Support" <support.novatel@hexagon.com>
+Build-Depends: debhelper (>= 9.0.0), git, libgeographiclib-dev, ros-kilted-ament-cmake, ros-kilted-gps-msgs, ros-kilted-launch-testing <!nocheck>, ros-kilted-launch-testing-ament-cmake <!nocheck>, ros-kilted-launch-testing-ros <!nocheck>, ros-kilted-nav-msgs, ros-kilted-nmea-msgs, ros-kilted-novatel-oem7-msgs, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-components, ros-kilted-rclpy <!nocheck>, ros-kilted-rosbag2 <!nocheck>, ros-kilted-rosidl-runtime-py <!nocheck>, ros-kilted-sensor-msgs, ros-kilted-tf2-geometry-msgs, ros-kilted-ros-workspace
+Homepage: http://www.novatel.com
+Standards-Version: 3.9.2
+
+Package: ros-kilted-novatel-oem7-driver
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgeographiclib-dev, ros-kilted-gps-msgs, ros-kilted-nav-msgs, ros-kilted-nmea-msgs, ros-kilted-novatel-oem7-msgs, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rclcpp-components, ros-kilted-sensor-msgs, ros-kilted-tf2-geometry-msgs, ros-kilted-ros-workspace
+Description: NovAtel Oem7 ROS Driver
