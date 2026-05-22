@@ -1,3 +1,28 @@
+## novatel_oem7_driver (kilted) - 28.0.0-1
+
+The packages in the `novatel_oem7_driver` repository were released into the `kilted` distro by running `/usr/bin/bloom-release --new-track --rosdistro kilted --track kilted novatel_oem7_driver` on `Fri, 22 May 2026 20:48:07 -0000`
+
+These packages were released:
+- `novatel_oem7_driver`
+- `novatel_oem7_msgs`
+
+Version of package(s) in repository `novatel_oem7_driver`:
+
+- upstream repository: https://github.com/novatel/novatel_oem7_driver.git
+- release repository: https://github.com/novatel-gbp/novatel_oem7_driver-release.git
+- rosdistro version: `4.3.0-2`
+- old version: `4.3.0-2`
+- new version: `28.0.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.3`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## novatel_oem7_driver (jazzy) - 24.2.1-1
 
 The packages in the `novatel_oem7_driver` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy novatel_oem7_driver --edit` on `Wed, 18 Mar 2026 20:05:24 -0000`
