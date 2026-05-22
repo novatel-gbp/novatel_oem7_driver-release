@@ -2,13 +2,13 @@
 Changelog for package novatel_oem7_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-24.2.1 (2026-03-13)
+28.0.0 (2025-10-02)
 --------------------
-Move towards Rolling support
+Formal support for Kilted
 
 Modifications:
 
-* Removes ament_target_dependencies, which is removed in ROS2 rolling (`#100 <https://github.com/novatel/novatel_oem7_driver/pull/100>`_)
+* Removed all remaining Boost header dependencies
 
 24.2.0 (2025-09-09)
 --------------------
